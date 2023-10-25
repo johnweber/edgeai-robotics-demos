@@ -36,7 +36,7 @@ This script implements SCUTTLE specific control logic.
 import sys
 
 from common.robot_if import *
-from scuttlepy import *
+from ddcontroller import *
 
 class ScuttleDrive(RobotIf):
     """
@@ -52,7 +52,7 @@ class ScuttleDrive(RobotIf):
             config: str, optional
                 Name of the YAML configuration file definining the robot operational parameters.
                 If 'None' is specified then the following file will be used:
-                /opt/robot/edgeai-robotics-demos/python/common/scuttlepy/config/scuttle_sk_config.yaml
+                /opt/robot/edgeai-robotics-demos/python/common/ddcontroller/config/scuttle_sk_config.yaml
             queue_time_out (int): Time-out for command queue reads
 
         """
@@ -70,7 +70,7 @@ class ScuttleDrive(RobotIf):
         Overwrites the base class start() method
         """
         if self.thread == None:
-            self._robot = SCUTTLE(config=self._config, openLoop=True)
+            self._robot = DDRobot(config=self._config, openLoop=True)
             self.thread = threading.Thread(target=self._control_thread)
             self.thread.start()
 

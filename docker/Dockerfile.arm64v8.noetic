@@ -40,11 +40,11 @@ FROM j7-ros-noetic:8.2
 #    rm -rf /var/lib/apt/lists/
 
 RUN mkdir -p /opt/robot && cd /opt/robot && \
-    git clone https://github.com/ansarid/scuttlepy.git && \
-    pip3 install /opt/robot/scuttlepy && \
+    git clone https://github.com/ansarid/ddcontroller.git && \
+    pip3 install /opt/robot/ddcontroller && \
     git clone https://github.com/TexasInstruments/ti-gpio-py.git &&\
     pip3 install /opt/robot/ti-gpio-py && \
-    rm -rf /opt/robot/scuttlepy && \
+    rm -rf /opt/robot/ddcontroller && \
     rm -rf /opt/robot/ti-gpio-py
 
 RUN apt-get update && \

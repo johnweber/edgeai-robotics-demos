@@ -1,11 +1,11 @@
 import sys
 import time
-from scuttlepy import *
+from ddcontroller import *
 
-config = '/opt/robot/edgeai-robotics-demos/python/common/scuttlepy/config/scuttle_sk_config.yaml'
+config = '/opt/robot/edgeai-robotics-demos/python/common/ddcontroller/config/scuttle_sk_config.yaml'
 
 try:
-    robot = SCUTTLE(config, openLoop=True)
+    robot = DDRobot(config, openLoop=True)
 except Exception as e:
     print("Exception: {0}".format(e))
     sys.exit(2)

@@ -44,7 +44,7 @@ root@j7-docker:~/j7ros_home/ros_ws$ catkin_make --source /opt/robot
 Extend the PYTHONPATH environment to use the robot control library.
 
 ``` shell
-root@j7-docker:~/j7ros_home/ros_ws$ export PYTHONPATH=/opt/ti-gpio-py/lib/python:/root/opt/robot/scuttlepy:${PYTHONPATH}
+root@j7-docker:~/j7ros_home/ros_ws$ export PYTHONPATH=/opt/ti-gpio-py/lib/python:/root/opt/robot/ddcontroller:${PYTHONPATH}
 ```
 
 Turn on the power to the motors and launch scuttle_bringup package and gamepad controller. It launches the RPLidar sensor and publishes wheel odometry information.

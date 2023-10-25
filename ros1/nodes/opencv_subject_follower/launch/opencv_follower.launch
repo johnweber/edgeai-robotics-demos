@@ -8,7 +8,7 @@
     <arg name = "log_level"   default = "ERROR" />
 
     <!-- Default robot configuration -->
-    <arg name = "robot_config" default = "/opt/robot/edgeai-robotics-demos/python/common/scuttlepy/config/scuttle_sk_config.yaml" />
+    <arg name = "robot_config" default = "/opt/robot/edgeai-robotics-demos/python/common/ddcontroller/config/scuttle_sk_config.yaml" />
 
     <!-- ti_vision_cnn -->
     <node pkg = "opencv_subject_follower"

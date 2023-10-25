@@ -1,7 +1,7 @@
 <launch>
   <!-- scuttle_bringup -->
   <arg name="gui" default="false" />
-  <arg name="robot_config" default="/opt/robot/edgeai-robotics-demos/python/common/scuttlepy/config/scuttle_sk_config.yaml"/>
+  <arg name="robot_config" default="/opt/robot/edgeai-robotics-demos/python/common/ddcontroller/config/scuttle_sk_config.yaml"/>
 
   <param name ="/use_sim_time" value="false"/>
   <param name="use_gui" value="$(arg gui)"/>

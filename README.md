@@ -22,7 +22,7 @@ integration of the computation logic that leads to the commands driving the robo
 4. The `ros1` sub-directory contains the ROS version of the applications under `python/apps`
    sub-directory and a navigation application. Please see [Setting up and running demos under ROS](#setting-up-and-running-demos-under-ros) for details.
 
-**NOTE: The file `python/common/scuttlepy/config/scuttle_sk_config.yaml` is a very important
+**NOTE: The file `python/common/ddcontroller/config/scuttle_sk_config.yaml` is a very important
 configuration file that specifies the GPIO pin configuration for the motors and the
 encoders on the SCUTTLE. In addition, it also has other important operational parameters.
 The users should not modify this file unless there is a need to update some of the settings
@@ -111,7 +111,7 @@ Documentation on the SCUTTLE robot can be found at the following link:
 Familiarize yourself with ``SCUTTLE WiringGuide.pdf`` content since the wiring on the robot with the
 SK board is identical to the one that uses Raspberry Pi board.
 
-Documentation on the scuttlepy library can be found at the following link:
+Documentation on the ddcontroller library can be found at the following link:
 
-* [SCUTTLEPY LIBRARY](https://github.com/ansarid/scuttlepy.git)
+* [DDController LIBRARY](https://github.com/ansarid/ddcontroller.git)
 

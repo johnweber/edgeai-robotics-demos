@@ -6,7 +6,7 @@
   <node pkg="tf" type="static_transform_publisher" name="base_foot_to_base_link" args="0 0 0 0 0 0 base_footprint base_link 30" />
 
   <!-- Default robot configuration -->
-  <arg name = "robot_config" default = "/opt/robot/edgeai-robotics-demos/python/common/scuttlepy/config/scuttle_sk_config.yaml" />
+  <arg name = "robot_config" default = "/opt/robot/edgeai-robotics-demos/python/common/ddcontroller/config/scuttle_sk_config.yaml" />
 
   <!-- Map File -->
   <arg name="map_file" default="$(find lidar_navigation)/maps/ewing_0218.map.yaml"/>

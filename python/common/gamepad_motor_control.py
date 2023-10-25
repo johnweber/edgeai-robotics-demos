@@ -234,7 +234,7 @@ class GamepadMotorControl:
         self.stop()
 
 if __name__ == "__main__":
-    config = '/opt/robot/edgeai-robotics-demos/python/common/scuttlepy/config/scuttle_sk_config.yaml'
+    config = '/opt/robot/edgeai-robotics-demos/python/common/ddcontroller/config/scuttle_sk_config.yaml'
 
     try:
         # Get the global instance of the robot control object

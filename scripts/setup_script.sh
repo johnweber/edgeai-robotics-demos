@@ -51,16 +51,16 @@ fi
 # Create the directory path, if it does not exist
 mkdir -p $ROOT
 
-# Install scuttlepy
-ls $ROOT | grep "scuttlepy"
+# Install ddcontroller
+ls $ROOT | grep "ddcontroller"
 if [ "$?" -ne "0" ]; then
-    echo "Cloning scuttlepy project."
-    git clone https://github.com/ansarid/scuttlepy.git $ROOT/scuttlepy
+    echo "Cloning ddcontroller project."
+    git clone https://github.com/ansarid/ddcontroller.git $ROOT/ddcontroller
     if [ "$?" -ne "0" ]; then
         exit_setup
     fi
 
-    pip3 install $ROOT/scuttlepy
+    pip3 install $ROOT/ddcontroller
     if [ "$?" -ne "0" ]; then
         exit_setup
     fi
