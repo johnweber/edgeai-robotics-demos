@@ -131,6 +131,9 @@ class GamepadMotorControl:
 
         """
         user_task_registered = False
+
+        print(f"starting gamepad control thread")
+
         while self._stop_thread == False:
             # COLLECT GAMEPAD COMMANDS
             gp_data = self.gamepad.getData()
@@ -141,12 +144,16 @@ class GamepadMotorControl:
             # Mutiply joystick y axis by scuttle max linear velocity to get linear velocity
             linVel  = gp_data[1] * GamepadMotorControl.MAX_LINEAR_VELOCITY
             
+            #print(f"linvel {linVel} angvel {angVel}")
+
             # State machine logic
             if gp_data[BUTTON_Y] > 0:
                 # Enable the gamepad controller and register with the robot control
+                print(f"control on")
                 self._control_on = True
                 self._robot.register_control_task(ID_CONTROLLER_TASK)
             elif gp_data[BUTTON_X] > 0:
+                #print(f"control off")
                 # Disable the gamepad controller 
                 self._control_on = False
                 self._robot.unregister_control_task(ID_CONTROLLER_TASK)
@@ -173,6 +180,8 @@ class GamepadMotorControl:
 
             # Honor the rate
             time.sleep(1.0/self._rateHz)
+
+        print(f"stopping gamepad control thread")
 
     def start(self):
         """
@@ -234,7 +243,7 @@ class GamepadMotorControl:
         self.stop()
 
 if __name__ == "__main__":
-    config = '/opt/robot/edgeai-robotics-demos/python/common/ddcontroller/config/scuttle_sk_config.yaml'
+    config = '/opt/robot/edgeai-robotics-demos/python/common/ddcontroller/config/rovyboy_config.yaml'
 
     try:
         # Get the global instance of the robot control object

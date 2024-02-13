@@ -70,7 +70,7 @@ class ScuttleDrive(RobotIf):
         Overwrites the base class start() method
         """
         if self.thread == None:
-            self._robot = DDRobot(config=self._config, openLoop=True)
+            self._robot = DDRobot(config_path=self._config, debug=False)
             self.thread = threading.Thread(target=self._control_thread)
             self.thread.start()
 

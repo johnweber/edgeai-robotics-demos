@@ -99,7 +99,8 @@ class RobotIf:
                 self.inputQ.put(motionCmd)
             else:
                 # Sender has not been registered to send commands
-                pass #print("{} not in registered tasks. Ignoring.".format(motionCmd.id))
+                print("{} not in registered tasks. Ignoring.".format(motionCmd.id))
+                pass 
         except Exception as e:
             raise
 
@@ -109,7 +110,9 @@ class RobotIf:
 
         # Create an input queue
         self.inputQ = queue.Queue(maxsize=RobotIf.MAX_IN_QUEUE_SIZE)
-        self._robot.setMotion(self.stop_cmd.cmd)
+        self._robot.set_motion(self.stop_cmd.cmd)
+
+        print(f"starting control thread")
 
         # Process input commands
         while self._stop_thread == False:
@@ -121,7 +124,8 @@ class RobotIf:
                 cmd = self.stop_cmd
 
             if self._stop_thread == True:
-                self._robot.setMotion(self.stop_cmd.cmd)
+                self._robot.set_motion(self.stop_cmd.cmd)
+                print ("stop_thread True")
                 break
 
             # Discard the command if emergency stop flag has been set
@@ -131,12 +135,14 @@ class RobotIf:
             if ((self._prevCmd[0] != cmd.cmd[0]) or
                 (self._prevCmd[1] != cmd.cmd[1])):
                 # Send command to the robot
-                self._robot.setMotion(cmd.cmd)
+                self._robot.set_motion(cmd.cmd)
                 self._prevCmd = cmd.cmd
 
         # Delete input queue
         del self.inputQ
         self.inputQ = None
+
+        print(f"stopping control thread")
 
     def set_emergency_flag(self, boolFlag):
         """
