@@ -1,0 +1,178 @@
+# This file is part of the ddcontroller library (https://github.com/ansarid/ddcontroller).
+# Copyright (C) 2022  Daniyal Ansari
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+label: 'Rovybot Config'
+
+robot:
+
+    # Wheel Base Distance (m)
+    wheel_base: 0.355
+
+    # Maximum Linear Velocity (m/s)
+    max_linear_velocity: 0.45
+
+    # Maximum Angular Velocity (rad/s)
+    max_angular_velocity: 2.7
+
+    # Wheel Loop Frequency (Hz)
+    wheel_frequency: 50
+
+    # Maximum Linear Velocity During Goal-to-Goal Navigation (m/s)
+    max_traveling_linear_velocity: 0.2
+
+    # Maximum Angular Velocity During Goal-to-Goal Navigation (m/s)
+    max_traveling_angular_velocity: 0.75
+
+    # Heading Controller PID Gains
+    heading_Kp: 6
+    heading_Ki: 0
+    heading_Kd: 0
+
+    # Left Wheel Parameters
+    left_wheel:
+
+        # Wheel Radius (m)
+        wheel_radius: 0.04165
+
+        # Number Of Teeth On Motor Pulley
+        motor_pulley_teeth: 15
+
+        # Number Of Teeth On Wheel Pulley
+        wheel_pulley_teeth: 30
+
+        # Open or closed loop control
+        closed_loop: False
+
+        # Closed Loop Wheel Speed PID Gains
+        Kp: 0
+        Ki: 0
+        Kd: 0
+
+        encoder:
+
+            # I2C Bus ID
+            i2c_bus: 9
+
+            # Encoder Address
+            address: 0x40
+
+            # Flag To Indicate If The Encoder Readings Need To Be Inverted
+            invert: True
+
+        motor:
+
+            # Motor PWM Frequency (Hz)
+            #pwm_frequency: 220
+            pwm_frequency: 25000
+
+            # Indicate If The Motor Duty Cycle Needs To Be Inverted. If control_mode = PWM_DIR, setting
+            # this value to True inverts the direction output control.
+            invert: True
+
+            # control_type:
+            # DUAL_PWM (default):
+            #     Both pins are PWM outputs. Suitable for controlling a DC motor using an H-bridge
+            # PWM_DIR:
+            #     The first pin is a PWM output, while the second pin is GPIO for controlling
+            #     motor rotation direction.  This is suitable for controlling some low-cost BLDC
+            #     motors which utilize a single PWM and a direction signal.
+            control_type: PWM_DIR
+
+            # min_pwm_duty:
+            #     The minimum PWM duty cycle in percent. Should be set to the lowest value which causes
+            #     gearbox rotation.                     
+            min_pwm_duty: 38
+
+            # max_pwm_duty:
+            #     The maximum PWM duty cycle in percent. Should be set to the highest value.
+            max_pwm_duty: 95
+
+            # Motor Pins. If control_type = PWM_DIR, the first pin is the PWM output and the second pin
+            # is the direction control.
+            pins:
+                - 33
+                - 35
+
+            # Indicate Motor Decay Mode (SLOW/FAST)
+            decay_mode: FAST
+
+    # Right Wheel Parameters
+    right_wheel:
+
+        # Wheel Radius (m)
+        wheel_radius: 0.04165
+
+        # Number Of Teeth On Motor Pulley
+        motor_pulley_teeth: 15
+
+        # Number Of Teeth On Wheel Pulley
+        wheel_pulley_teeth: 30
+
+        # Open or closed loop control
+        closed_loop: False
+
+        # Closed Loop Wheel Speed PID Gains
+        Kp: 0
+        Ki: 0
+        Kd: 0
+
+        encoder:
+
+            # I2C Bus ID
+            i2c_bus: 9
+
+            # Encoder Address
+            address: 0x41
+
+            # Flag To Indicate If The Encoder Readings Need To Be Inverted
+            invert: False
+
+        motor:
+
+            # Motor PWM Frequency (Hz)
+             #pwm_frequency: 220
+            pwm_frequency: 25000
+
+            # Indicate If The Motor Duty Cycle Needs To Be Inverted. If control_mode = PWM_DIR, setting
+            # this value to True inverts the direction output control.
+            invert: False
+
+            # control_type:
+            # DUAL_PWM (default):
+            #     Both pins are PWM outputs. Suitable for controlling a DC motor using an H-bridge
+            # PWM_DIR:
+            #     The first pin is a PWM output, while the second pin is GPIO for controlling
+            #     motor rotation direction.  This is suitable for controlling some low-cost BLDC
+            #     motors which utilize a single PWM and a direction signal.
+            control_type: PWM_DIR
+
+            # min_pwm_duty:
+            #     The minimum PWM duty cycle in percent. Should be set to the lowest value which causes
+            #     gearbox rotation.                     
+            min_pwm_duty: 38
+
+            # max_pwm_duty:
+            #     The maximum PWM duty cycle in percent. Should be set to the highest value.
+            max_pwm_duty: 95
+
+            # Motor Pins. If control_type = PWM_DIR, the first pin is the PWM output and the second pin
+            # is the direction control.
+            pins:
+                - 38
+                - 40
+
+            # Indicate Motor Decay Mode (SLOW/FAST)
+            decay_mode: FAST
