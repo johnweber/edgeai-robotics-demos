@@ -2,10 +2,10 @@
 title: "OpenCV Based Subject Tracking Demo"
 
 # SCUTTLE configuration
-robot_config: '/opt/robot/edgeai-robotics-demos/python/common/ddcontroller/config/scuttle_sk_config.yaml'
+robot_config: '/opt/robot/edgeai-robotics-demos/python/common/ddcontroller/config/rovybot_config.yaml'
 
 # Input source
-source: /dev/video2
+source: /dev/video3
 
 # Input framerate
 framerate: 15
@@ -17,10 +17,10 @@ input_width: 240
 input_height: 160
 
 # Minimum radius of the object to start following
-min_radius: 20
+min_radius: 25
 
 # Target radius of the object where the target has achieved its goal
-target_radius: 100
+target_radius: 75
 
 # Center threshold in pixels
 center_threshold: 50

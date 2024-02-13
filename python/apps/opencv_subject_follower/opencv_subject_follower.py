@@ -133,8 +133,8 @@ class Follower:
 
         if fps_read != fps:
             self.logger.error("Failed to ser fps to {}".format(fps))
-            camera.release()
-            sys.exit(1)
+            #camera.release()
+            #sys.exit(1)
         else:
             self.logger.info("FPS: {}".format(fps))
 
@@ -166,6 +166,7 @@ class Follower:
         self.robot.sendCommand(cmd)
 
     def _proc_thread(self):
+        print ("Starting _proc_thread")
         try:
             while (self._stop_thread == False) and self.camera.isOpened():
                 image = newImage(self.camera, self.size)
@@ -178,6 +179,7 @@ class Follower:
                 if target != None:
                     x, y, radius = target
                     chassisTargets = self.follower.getChassisTargets(x, y, radius)
+                    print("X = {0:.2f} Y = {1:.2f} R:{2:.2f} T:{3}".format(x, y, radius, chassisTargets))
                     self.logger.info("X = {0:.2f} Y = {1:.2f} R:{2:.2f} T:{3}".\
                                      format(x, y, radius, chassisTargets))
                 else:
@@ -189,6 +191,7 @@ class Follower:
                 time.sleep(1.0/self.fps)
         except KeyboardInterrupt:
             if self.camera.isOpened():
+                print ("Stopping _proc_thread")
                 self.camera.release()
 
     def start(self):
