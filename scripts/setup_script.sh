@@ -54,8 +54,8 @@ mkdir -p $ROOT
 # Install ddcontroller
 ls $ROOT | grep "ddcontroller"
 if [ "$?" -ne "0" ]; then
-    echo "Cloning ddcontroller project."
-    git clone https://github.com/ansarid/ddcontroller.git $ROOT/ddcontroller
+    echo "Cloning fork of ddcontroller project."
+    git clone --single-branch --branch enable-bldc https://github.com/johnweber/ddcontroller.git $ROOT/ddcontroller
     if [ "$?" -ne "0" ]; then
         exit_setup
     fi
@@ -89,11 +89,32 @@ fi
 # Install TI GPIO Python
 ls $ROOT | grep "ti-gpio-py"
 if [ "$?" -ne "0" ]; then
-    echo "Cloning TI.GPIO python project."
-    git clone --single-branch --branch master https://github.com/TexasInstruments/ti-gpio-py.git $ROOT/ti-gpio-py
+    echo "Cloning fork of TI.GPIO python project."
+    git clone --single-branch --branch rovy-4vm-add https://github.com/johnweber/ti-gpio-py.git $ROOT/ti-gpio-py
     if [ "$?" -ne "0" ]; then
         exit_setup
     fi
+
+    pip3 install $ROOT/ti-gpio-py
+    if [ "$?" -ne "0" ]; then
+        exit_setup
+    fi
+
+fi
+
+ls $ROOT | grep "as5048b"
+if [ "$?" -ne "0" ]; then
+    echo "Cloning as5048b python project."
+    git clone --single-branch --branch main https://github.com/ansarid/as5048b.git $ROOT/as5048b
+    if [ "$?" -ne "0" ]; then
+        exit_setup
+    fi
+
+    pip3 install $ROOT/as5048b
+    if [ "$?" -ne "0" ]; then
+        exit_setup
+    fi
+
 fi
 
 sync
