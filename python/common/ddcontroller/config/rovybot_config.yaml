@@ -64,7 +64,7 @@ robot:
         encoder:
 
             # I2C Bus ID
-            i2c_bus: 9
+            i2c_bus: 5
 
             # Encoder Address
             address: 0x40
@@ -132,7 +132,7 @@ robot:
         encoder:
 
             # I2C Bus ID
-            i2c_bus: 9
+            i2c_bus: 5
 
             # Encoder Address
             address: 0x41
