@@ -83,7 +83,7 @@ class PostProcess:
 class PostProcessTracking(PostProcess):
     def __init__(self, flow, cbObj):
         super().__init__(flow)
-        self.classnames = eval(flow.model.dataset)
+#        self.classnames = eval(flow.model.dataset)
 
         self.cbObj = cbObj
 
@@ -125,7 +125,25 @@ class PostProcessTracking(PostProcess):
         class_name = None
         for b in bbox:
             if self.cbObj and b[5] > self.cbObj.thresh:
-                class_name = self.classnames[self.model.label_offset[int(b[4])]]
+#                class_name = self.classnames[self.model.label_offset[int(b[4])]]
+                if type(self.model.label_offset) == dict:
+                    class_name_idx = self.model.label_offset[int(b[4])]
+                else:
+                    class_name_idx = self.model.label_offset + int(b[4])
+
+                if class_name_idx in self.model.dataset_info:
+                    class_name = self.model.dataset_info[class_name_idx].name
+                    if not class_name:
+                        class_name = "UNDEFINED"
+                    if self.model.dataset_info[class_name_idx].supercategory:
+                        class_name = (
+                            self.model.dataset_info[class_name_idx].supercategory
+                            + "/"
+                            + class_name
+                        )
+                else:
+                    class_name = "UNDEFINED"
+
                 if self.cbObj.target_class in class_name:
                     box = [int(b[0] * img.shape[1]),\
                            int(b[1] * img.shape[0]),\

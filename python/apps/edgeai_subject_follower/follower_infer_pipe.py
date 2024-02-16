@@ -74,6 +74,7 @@ class InferPipe:
         """
         Stop the pipeline
         """
+        print("Stopping infer pipe...\n")
         self.stop_thread = True
 
     def wait_for_exit(self):
@@ -89,13 +90,13 @@ class InferPipe:
         while self.stop_thread == False:
             #capture and pre-process
             input_img = self.gst_pipe.pull_tensor(
-                                            self.gst_pre_inp, \
-                                            self.sub_flow.input.loop, \
-                                            self.sub_flow.model.crop[0], \
-                                            self.sub_flow.model.crop[1], \
-                                            self.sub_flow.model.data_layout, \
-                                            self.sub_flow.model.data_type \
-                                            )
+                self.gst_pre_inp,
+                self.sub_flow.input.loop,
+                self.sub_flow.model.crop[0],
+                self.sub_flow.model.crop[1],
+                self.sub_flow.model.data_layout,
+                self.sub_flow.model.input_tensor_types[0],
+            )
             if (type(input_img) == type(None)):
                 break
             #Inference
