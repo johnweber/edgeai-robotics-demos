@@ -22,7 +22,7 @@ robot:
     wheel_base: 0.355
 
     # Maximum Linear Velocity (m/s)
-    max_linear_velocity: 0.45
+    max_linear_velocity: 1.5
 
     # Maximum Angular Velocity (rad/s)
     max_angular_velocity: 2.7
@@ -31,7 +31,7 @@ robot:
     wheel_frequency: 50
 
     # Maximum Linear Velocity During Goal-to-Goal Navigation (m/s)
-    max_traveling_linear_velocity: 0.2
+    max_traveling_linear_velocity: 1.0
 
     # Maximum Angular Velocity During Goal-to-Goal Navigation (m/s)
     max_traveling_angular_velocity: 0.75
@@ -45,7 +45,7 @@ robot:
     left_wheel:
 
         # Wheel Radius (m)
-        wheel_radius: 0.04165
+        wheel_radius: 0.076
 
         # Number Of Teeth On Motor Pulley
         motor_pulley_teeth: 15
@@ -80,7 +80,7 @@ robot:
 
             # Indicate If The Motor Duty Cycle Needs To Be Inverted. If control_mode = PWM_DIR, setting
             # this value to True inverts the direction output control.
-            invert: True
+            invert: False
 
             # control_type:
             # DUAL_PWM (default):
@@ -94,17 +94,17 @@ robot:
             # min_pwm_duty:
             #     The minimum PWM duty cycle in percent. Should be set to the lowest value which causes
             #     gearbox rotation.                     
-            min_pwm_duty: 38
+            min_pwm_duty: 35
 
             # max_pwm_duty:
             #     The maximum PWM duty cycle in percent. Should be set to the highest value.
-            max_pwm_duty: 95
+            max_pwm_duty: 100
 
             # Motor Pins. If control_type = PWM_DIR, the first pin is the PWM output and the second pin
             # is the direction control.
             pins:
-                - 33
-                - 35
+                - 38
+                - 40
 
             # Indicate Motor Decay Mode (SLOW/FAST)
             decay_mode: FAST
@@ -113,7 +113,7 @@ robot:
     right_wheel:
 
         # Wheel Radius (m)
-        wheel_radius: 0.04165
+        wheel_radius: 0.076
 
         # Number Of Teeth On Motor Pulley
         motor_pulley_teeth: 15
@@ -148,7 +148,7 @@ robot:
 
             # Indicate If The Motor Duty Cycle Needs To Be Inverted. If control_mode = PWM_DIR, setting
             # this value to True inverts the direction output control.
-            invert: False
+            invert: True
 
             # control_type:
             # DUAL_PWM (default):
@@ -162,17 +162,17 @@ robot:
             # min_pwm_duty:
             #     The minimum PWM duty cycle in percent. Should be set to the lowest value which causes
             #     gearbox rotation.                     
-            min_pwm_duty: 38
+            min_pwm_duty: 35
 
             # max_pwm_duty:
             #     The maximum PWM duty cycle in percent. Should be set to the highest value.
-            max_pwm_duty: 95
+            max_pwm_duty: 100
 
             # Motor Pins. If control_type = PWM_DIR, the first pin is the PWM output and the second pin
             # is the direction control.
             pins:
-                - 38
-                - 40
+                - 33
+                - 35
 
             # Indicate Motor Decay Mode (SLOW/FAST)
             decay_mode: FAST
