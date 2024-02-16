@@ -98,12 +98,13 @@ class Gamepad:
         for axis in self.axesMap.keys():
             self.axes[self.axesMap[axis]] = 128
 
-        # self.stateUpdater()
+        self.stopped = False
+
         self.stateUpdaterThread = threading.Thread(target=self.stateUpdater)
         self.stateUpdaterThread.start()
 
     def _getStates(self):
-        events = get_gamepad()
+        events = get_gamepad()  # Will block waiting for input which totally sucks
         for event in events:
             # print(event.ev_type, event.code, event.state)
             if event.ev_type == "Absolute":
@@ -127,7 +128,9 @@ class Gamepad:
         return self.states
 
     def stateUpdater(self):
-        while True:
+        # Check to see if the stopped flag is set
+        while not self.stopped:
+            # This will block until get_gamepad returns data
             self._getStates()
 
     def getStates(self):
@@ -156,6 +159,14 @@ class Gamepad:
         gp_data = np.hstack((axes, buttons))                # this array will have 16 elements
 
         return(gp_data)
+    
+    def close(self):
+        if(not self.stopped):
+            self.stopped = True
+            self.stateUpdaterThread.join(1.0)
+
+    def __del__(self):
+        self.close()
 
 if __name__ == "__main__":
     gamepad = Gamepad()
