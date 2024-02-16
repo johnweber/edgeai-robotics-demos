@@ -211,3 +211,24 @@ def enable_curses_reports(demo_title):
 def disable_curses_reports():
     global stop_reporting_loop
     stop_reporting_loop = True
+
+
+def to_fraction(num):
+    """
+    Function to convert numebe to string fraction
+    Eg: 0.5 -> "1/2"
+    Args:
+        num: Number to convert to fraction
+    """
+    if type(num) == int:
+        framerate = "%d/1" % num
+        return framerate
+    elif type(num) == float:
+        num = str(num)
+        _, decimal = num.split(".")
+        numerator = str(int(num.replace(".", "")))
+        denomerator = str(10 ** len(decimal))
+        return "%s/%s" % (numerator, denomerator)
+    else:
+        print("[ERROR] Framerate is not numeric.")
+
