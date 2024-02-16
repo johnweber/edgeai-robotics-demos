@@ -80,8 +80,8 @@ class GamepadMotorControl:
 
     """
 
-    MAX_ANGULAR_VELOCITY = 2.0 # rad/s
-    MAX_LINEAR_VELOCITY  = 0.4 # m/s
+    MAX_ANGULAR_VELOCITY = 2.7 # rad/s
+    MAX_LINEAR_VELOCITY  = 1.0 # m/s
 
     def __init__(self, config=None, rateHz=25.0):
         """
@@ -117,7 +117,17 @@ class GamepadMotorControl:
         self._stop_thread = False
         self._control_on  = False
         self._robot       = get_robot_control_instance(self._config)
+        if self._robot == None:
+            print("Failed to get robot control instance")
+            return -1
         self._robot.set_emergency_flag(True)
+        self.thread = threading.Thread(target=self._control_thread)
+
+    def is_alive(self):
+        if (self.thread == None):
+            return False
+
+        return self.thread.is_alive()
 
     def _control_thread(self):
         """
@@ -144,8 +154,6 @@ class GamepadMotorControl:
             # Mutiply joystick y axis by scuttle max linear velocity to get linear velocity
             linVel  = gp_data[1] * GamepadMotorControl.MAX_LINEAR_VELOCITY
             
-            #print(f"linvel {linVel} angvel {angVel}")
-
             # State machine logic
             if gp_data[BUTTON_Y] > 0:
                 # Enable the gamepad controller and register with the robot control
@@ -191,21 +199,12 @@ class GamepadMotorControl:
             0 if successful, a negative value otherwise.
 
         """
-        if self.thread == None:
-            # Get the global instance of the robot control object
-            if self._robot == None:
-                self._robot = get_robot_control_instance(self._config)
+        self._stop_thread = False
+        self.thread.start()
 
-            if self._robot == None:
-                print("Failed to get robot control instance")
-                return -1
+        return 0
 
-            self.thread = threading.Thread(target=self._control_thread)
-            self.thread.start()
-
-            return 0
-
-    def wait_for_exit(self):
+    def wait_for_exit(self, timeout=1):
         """
         A blocking call for the processing thread to exit. This method is called from
         the 'stop' method so must not be called in the same thread of execution as 'stop'.
@@ -218,14 +217,10 @@ class GamepadMotorControl:
         This method will release the reference to the robot object.
 
         """
+        self.thread.join(timeout)
 
-        self.thread.join()
-
-        # Release the instance of the robot control object
-        release_robot_control_instance()
-        self._robot = None
-        self.thread = None
-
+        return self.thread.is_alive()
+ 
     def stop(self):
         """
         Stops the processing thread, if one is running. The call will wait for the thread to exit
@@ -234,25 +229,13 @@ class GamepadMotorControl:
         The call will return immediately if no processing thread is being executed.
 
         """
-
-        if self.thread != None:
-            self._stop_thread = True
-            self.wait_for_exit()
+        print("GamepadMotorControl: Stopping")
+        self._stop_thread = True
 
     def __del__(self):
-        self.stop()
+        print("GamepadMotorControl: Delete")
 
-if __name__ == "__main__":
-    config = '/opt/robot/edgeai-robotics-demos/python/common/ddcontroller/config/rovyboy_config.yaml'
-
-    try:
-        # Get the global instance of the robot control object
-        motor_control = GamepadMotorControl(config=config)
-        status = motor_control.start()
-        if status < 0:
-            sys.exit(status)
-
-        motor_control.wait_for_exit()
-    except KeyboardInterrupt:
-        motor_control.stop()
-        
+        # Release the instance of the robot control object
+        release_robot_control_instance()
+        self._robot = None
+        self.gamepad.close()  # will block
