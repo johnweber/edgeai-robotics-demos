@@ -171,12 +171,12 @@ def main(sys_argv):
 
         demoObj.wait_for_exit()
     except KeyboardInterrupt:
-        pass
+        demoObj.stop()
     finally:
         pass
 
     if demoObj:
-        demoObj.stop()
+        #demoObj.stop()
         del demoObj
 
     if cbObj:
