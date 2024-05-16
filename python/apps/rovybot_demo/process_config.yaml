@@ -1,34 +1,11 @@
 # Demo title
-title: "EdgeAI Based Subject Tracking Demo"
+title: "Rovybot Demo"
 
 inputs:
     input0:
+        # Camera source.  /dev/video-tevs-cam0 is the forward-facing camera on the right
         source: /dev/video-tevs-cam0
         format: yuv
-        width: 1280
-        height: 720
-        framerate: 30
-    input1:
-        source: /dev/video-tevs-cam1
-        format: yuv
-        width: 1280
-        height: 720
-        framerate: 30
-    input2:
-        source: /dev/video-tevs-cam2
-        format: yuv
-        width: 1280
-        height: 720
-        framerate: 30
-    input3:
-        source: /dev/video-tevs-cam3
-        format: yuv
-        width: 1280
-        height: 720
-        framerate: 30
-    input4:
-        source: /dev/video-usb-cam0
-        format: jpeg
         width: 1280
         height: 720
         framerate: 30
@@ -62,4 +39,6 @@ outputs:
         height: 800
 
 flows:
-    flow0: [input0,model2,output2,[0,40,1280,720]]
+    flow0: [input0,model2,output1,[0,0,640,400]]
+
+

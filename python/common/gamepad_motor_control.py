@@ -99,9 +99,10 @@ class GamepadMotorControl:
         """
 
         self.thread = None
+        self._robot = False
 
         if config is None:
-            raise ValueError("NULL configuratuin passed.")
+            raise ValueError("NULL configuration passed.")
 
         if rateHz <= 0:
             raise ValueError("Invalid rate specified.")
@@ -109,6 +110,7 @@ class GamepadMotorControl:
         try:
             self.gamepad = gp.Gamepad()
         except Exception as e:
+            self.gamepad = None
             raise e
 
         self._rateHz = rateHz
@@ -118,10 +120,15 @@ class GamepadMotorControl:
         self._control_on  = False
         self._robot       = get_robot_control_instance(self._config)
         if self._robot == None:
-            print("Failed to get robot control instance")
+            print("Gamepad: failed to get robot control instance")
             return -1
-        self._robot.set_emergency_flag(True)
+        #self._robot.set_emergency_flag(True)
         self.thread = threading.Thread(target=self._control_thread)
+
+        # Grab the max velocities from the robot instance
+        self.max_linear_velocity = self._robot._robot.max_linear_velocity
+        self.max_angular_velocity = self._robot._robot.max_angular_velocity
+        print("Gamepad Control: Max LV: {0:.2f} Max AV: {1:.2f}".format(self.max_linear_velocity,self.max_angular_velocity))
 
     def is_alive(self):
         if (self.thread == None):
@@ -146,30 +153,35 @@ class GamepadMotorControl:
 
         while self._stop_thread == False:
             # COLLECT GAMEPAD COMMANDS
+            # BUG: this blocks and inhibhits the app from exiting with CTRL-C
             gp_data = self.gamepad.getData()
 
             # Mutiply joystick x axis by scuttle max angular velocity to get angular velocity
-            angVel = gp_data[0] * GamepadMotorControl.MAX_ANGULAR_VELOCITY
+            angVel = gp_data[0] * self.max_angular_velocity
 
             # Mutiply joystick y axis by scuttle max linear velocity to get linear velocity
-            linVel  = gp_data[1] * GamepadMotorControl.MAX_LINEAR_VELOCITY
+            linVel  = gp_data[1] * self.max_linear_velocity
             
             # State machine logic
             if gp_data[BUTTON_Y] > 0:
-                # Enable the gamepad controller and register with the robot control
                 print(f"control on")
                 self._control_on = True
+                self._robot.set_joystick_control(True) 
                 self._robot.register_control_task(ID_CONTROLLER_TASK)
+
             elif gp_data[BUTTON_X] > 0:
-                #print(f"control off")
-                # Disable the gamepad controller 
+                print(f"control off")
                 self._control_on = False
+                self._robot.set_joystick_control(False)
                 self._robot.unregister_control_task(ID_CONTROLLER_TASK)
+
             elif gp_data[BUTTON_B] > 0:
                 # Set the emergency stop condition
+                print(f"Gamepad Control: Emergency Stop Set")
                 self._robot.set_emergency_flag(True)
             elif gp_data[BUTTON_A] > 0:
                 # Reset the emergency stop condition
+                print(f"Gamepad Control: Emergency Stop Reset (off)")
                 self._robot.set_emergency_flag(False)
             elif gp_data[BUTTON_START] > 0:
                 # Enable the user task control and register with the robot control
@@ -179,6 +191,7 @@ class GamepadMotorControl:
                 # Disable the user task control
                 if user_task_registered:
                     user_task_registered = False
+                    print(f"Gamepad Control: User task unregistered")
                     self._robot.unregister_control_task(ID_USER_TASK)
 
             # Send the command only if the gamepad control has been enabled
@@ -189,7 +202,7 @@ class GamepadMotorControl:
             # Honor the rate
             time.sleep(1.0/self._rateHz)
 
-        print(f"stopping gamepad control thread")
+        print(f"Stopping gamepad control thread")
 
     def start(self):
         """
@@ -206,16 +219,7 @@ class GamepadMotorControl:
 
     def wait_for_exit(self, timeout=1):
         """
-        A blocking call for the processing thread to exit. This method is called from
-        the 'stop' method so must not be called in the same thread of execution as 'stop'.
-
-        This method is provided so that the caller can block from exiting the program if
-        another way of preventing the exit is not available. Since a thread is spawned inside
-        this class, the user of the object must not exit until the thread is terminated and this
-        method helps address that situation.
-
-        This method will release the reference to the robot object.
-
+        A blocking call for the processing thread to exit. 
         """
         self.thread.join(timeout)
 
@@ -229,13 +233,13 @@ class GamepadMotorControl:
         The call will return immediately if no processing thread is being executed.
 
         """
-        print("GamepadMotorControl: Stopping")
         self._stop_thread = True
 
     def __del__(self):
-        print("GamepadMotorControl: Delete")
-
         # Release the instance of the robot control object
-        release_robot_control_instance()
-        self._robot = None
-        self.gamepad.close()  # will block
+        if(self.gamepad):
+            self.gamepad.close()  # will block
+        if self._robot:
+            release_robot_control_instance()
+            self._robot = None
+

@@ -299,9 +299,12 @@ class SubFlow:
         self.gst_scaler_elements = gst_wrapper.get_scaler_elements(
             self, is_multi_src=flow.is_multi_scaler
         )
-        self.gst_pre_src_name = "pre_%d" % self.id
-        self.gst_pre_proc_elements = gst_wrapper.get_pre_proc_elements(self)
-        self.input.increase_split()
+        # If the model task is OpenCV, then we don't need a
+        # preprocessing stage in the pipeline
+        if(self.model.task_type != 'opencv'):
+            self.gst_pre_src_name = "pre_%d" % self.id
+            self.gst_pre_proc_elements = gst_wrapper.get_pre_proc_elements(self)
+            self.input.increase_split()
         self.gst_sen_src_name = "sen_%d" % self.id
         self.gst_sensor_elements = gst_wrapper.get_sensor_elements(self)
         self.input.increase_split()

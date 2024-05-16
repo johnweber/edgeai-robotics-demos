@@ -66,6 +66,7 @@ def get_robot_control_instance(config):
     global _robot
     global _instance_count
 
+    print("get_robot_control_instance: Count = {0}".format(_instance_count))
     if _robot == None:
         _robot = ScuttleDrive(config, queue_time_out=RobotIf.IN_QUEUE_TIMEOUT)
 
@@ -80,6 +81,7 @@ def release_robot_control_instance():
     global _robot
     global _instance_count
 
+    print("Release_robot_control_instance: Count = {0}".format(_instance_count))
     if _instance_count > 0:
         _instance_count = _instance_count - 1
         if _instance_count == 0:

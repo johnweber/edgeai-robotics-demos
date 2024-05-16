@@ -35,6 +35,7 @@ This script provides helper functions for creating logger objects.
 """
 
 import logging
+import logging.handlers
 
 def create_logger(name, level=logging.ERROR, fileName=None, maxFileSize=-1, maxFileCnt=2):
     """
@@ -71,7 +72,7 @@ def create_logger(name, level=logging.ERROR, fileName=None, maxFileSize=-1, maxF
             maxFileCnt  = 1
 
         # Create a file handler with max size
-        file_handler = logging.RotatingFileHandler(fileName,
+        file_handler = logging.handlers.RotatingFileHandler(fileName,
                                                    maxBytes=maxFileSize,
                                                    backupCount=maxFileCnt)
         file_handler.setLevel(level)

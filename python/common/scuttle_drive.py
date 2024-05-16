@@ -34,6 +34,7 @@ This script implements SCUTTLE specific control logic.
 
 """
 import sys
+import logging
 
 from common.robot_if import *
 from ddcontroller import *

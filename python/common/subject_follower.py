@@ -61,7 +61,7 @@ class SubjectFollower:
     """
 
     maxLinVel = 0.4
-    maxAngVel = 2
+    maxAngVel = 2.0
 
     def __init__(self, input_width, input_height, min_radius, target_radius, center_threshold=50):
         """

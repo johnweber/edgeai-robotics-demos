@@ -1,0 +1,192 @@
+
+# Robot control configuration
+#robot_config: 'rovybot_config.yaml'
+# Cannot use relative paths when running debug, so use abs paths
+robot_config: '/opt/robot/edgeai-robotics-demos/python/apps/rovybot_demo/rovybot_config.yaml'
+
+# Display output
+output:
+    sink: kmssink
+    width: 1280
+    height: 800    
+
+# Subject detector configuration
+subject_detector:
+    title: "Rovybot"
+
+    inputs:
+        input0:
+            # forward-facing camera on the right
+            source: /dev/video-tevs-cam0
+            format: yuv
+            width: 1280
+            height: 720
+            framerate: 30
+        input1:
+            # forward-facing left
+            source: /dev/video-tevs-cam1
+            format: yuv
+            width: 1280
+            height: 720
+            framerate: 30
+        input2:
+            # rear-facing
+            source: /dev/video-tevs-cam2
+            format: yuv
+            width: 1280
+            height: 720
+            framerate: 30
+        input3:
+            #  payload
+            source: /dev/video-tevs-cam3
+            format: yuv
+            width: 1280
+            height: 720
+            framerate: 30
+    
+    models:
+        model0:
+            model_path: /opt/model_zoo/ONR-OD-8200-yolox-nano-lite-mmdet-coco-416x416
+            model_name: none
+            viz_threshold: 0.6
+            model_type: dl
+        model1:
+            model_path: none
+            model_name: ball_detector
+            viz_threshold: 0.6
+            model_type: opencv
+        model2:
+            model_path: none
+            model_name: patch_detector
+            viz_threshold: 0.6
+            model_type: opencv
+
+    outputs:
+        output0:
+            # output location and size (x, y, width, height)
+            sink: kmssink
+            width: 1280
+            height: 800    
+
+    flows:
+        flow0: [input0,model0,output0,[640,0,640,400]]
+        flow1: [input2,model2,output0,[640,400,640,400]]
+        flow2: [input3,model1,output0,[0,400,640,400]]
+
+    # The input image width
+    input_width: 640
+
+    # The input image height
+    input_height: 400
+
+    # The input image width
+    input_hfov: 75
+
+    # Minimum radius of the object to start following
+    min_radius: 300
+
+    # Target radius of the object where the target has achieved its goal
+    target_radius: 300
+
+    # Center threshold in pixels
+    center_threshold: 50
+
+    # Object with the class name to track
+    target_class: "person/person"
+
+    # Minimum probability for considering objects for tracking
+    prob_threshold: 0.7
+
+    # heading tolerance (degrees)
+    heading_tolerance: 4
+
+    # Stop within distance to person (cm)
+    distance_to_person: 60   
+
+    # Payload ball detector config
+    ball_detector_config:
+
+        # Color ranges in RGB colorspace
+        ball_colors:
+
+            # Green Ball, HSV color space
+            green:
+                color: green
+                #min: [45,75,50]
+                min: [35,75,50]
+                max: [85,255,255]
+
+            # Blue Ball, HSV
+            blue:
+                color: blue
+                min: [5,100,100]
+                max: [15,255,255]
+               # max: [30,255,255]
+            
+            # Orange Ball
+            orange:
+                color: orange
+                min: [90,150,150]
+                max: [120,255,255]
+
+        # Minimum Radius in pixels
+        min_radius: 40 
+
+        # If True, then process ROI. False, process entire frame
+        use_roi: True
+        # Coordinates and size of payload outlet hole in frame, as a percentage
+        # of the frame width and height
+        roi:
+            w:  0.18
+            h:  0.25
+            cx: 0.49
+            cy: 0.22
+            show_bounding_box: True
+
+    # drop zone config
+    drop_zone_config:
+
+        # Color ranges in RGB colorspace
+        patch_colors:
+
+            # Green Ball, HSV color space
+            green:
+                color: green
+                #min: [45,75,50]
+                min: [45,75,50]
+                max: [85,255,255]
+
+            # Blue Ball, HSV
+            blue:
+                color: blue
+                min: [5,50,50]
+                max: [40,255,255]
+            
+            # Orange Ball
+            orange:
+                color: orange
+                min: [90,100,50]
+                max: [120,255,255]
+                #max: [130,255,255]
+
+        # minimum width of patch in pixels
+        # used to filter out small noise in the image
+        min_width: 40
+
+        # If True, then process ROI. False, process entire frame
+        use_roi: True
+        # Coordinates and size of payload outlet hole in frame, as a percentage
+        # of the frame width and height
+        roi:
+            w:  1.0
+            h:  0.4
+            cx: 0.5
+            cy: 0.55
+            show_bounding_box: True
+
+        # Patch sizes (cm)
+        patch_size:
+            width:  30
+            height: 20
+        
+

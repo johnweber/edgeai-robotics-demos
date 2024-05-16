@@ -67,12 +67,12 @@ class MotionCommand:
         cmd (tuple): A tuple with the linear and angular velocities respectively.
 
     """
-    def __init__(self, cmd=(0,0), tskId=ID_USER_TASK):
+    def __init__(self, cmd=[0,0], tskId=ID_USER_TASK):
         """
         Constructor.
 
         Args:
-            cmd: tuple
+            cmd: list
                 The first one gives the linear velocity in m/s and the second one gives
                 angular velocity in rad/sec
 

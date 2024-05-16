@@ -11,10 +11,10 @@ input_width: 1280
 input_height: 720
 
 # Minimum radius of the object to start following
-min_radius: 50
+min_radius: 100
 
 # Target radius of the object where the target has achieved its goal
-target_radius: 400
+target_radius: 800
 
 # Center threshold in pixels
 center_threshold: 50
@@ -23,5 +23,5 @@ center_threshold: 50
 target_class: "person/person"
 
 # Minimum probability for considering objects for tracking
-prob_threshold: 0.5
+prob_threshold: 0.8
 

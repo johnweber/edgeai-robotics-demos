@@ -80,6 +80,25 @@ def get_cmdline_args(sysv_args):
                         type=int,
                         choices=[0,1,2,3],
                         default = 3)
+    
+    help_str_curses = "Disable curses report\n" + "default: Disabled"
+    parser.add_argument(
+        "-n", "--no-curses", help=help_str_curses, action="store_true", default=False
+    )
+
+    help_str_verbose = (
+        "Verbose option to print profile info on stdout\n" + "default: Disabled"
+    )
+    parser.add_argument(
+        "-v", "--verbose", help=help_str_verbose, action="store_true", default=False
+    )
+
+    help_str_dump_dot = (
+        "Dump option to dump pipeline as dot file\n" + "default: Disabled"
+    )
+    parser.add_argument(
+        "-d", "--dump-dot", help=help_str_dump_dot, action="store_true", default=False
+    )
 
     args = parser.parse_args()
 

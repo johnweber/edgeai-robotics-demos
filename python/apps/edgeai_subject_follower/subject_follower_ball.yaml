@@ -23,5 +23,5 @@ center_threshold: 50
 target_class: "sports/sports ball"
 
 # Minimum probability for considering objects for tracking
-prob_threshold: 0.2
+prob_threshold: 0.5
 

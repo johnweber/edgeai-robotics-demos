@@ -33,7 +33,7 @@ import sys
 import utils
 import yaml
 
-GST_ELEMENT_MAP_PATH = "/opt/edgeai-gst-apps/configs/gst_plugins_map.yaml"
+GST_ELEMENT_MAP_PATH = "./gst_plugins_map.yaml"
 
 
 def parse_gst_element_map():
@@ -41,8 +41,10 @@ def parse_gst_element_map():
     Helper function to load available gst plugins based on env var. SOC
     """
 
-    if not os.path.exists(GST_ELEMENT_MAP_PATH):
-        print("[ERROR] %s does not exist." % (GST_ELEMENT_MAP_PATH))
+    GST_ELEMENT_MAP_FILE = os.path.join(os.path.dirname(__file__), GST_ELEMENT_MAP_PATH)
+
+    if not os.path.exists(GST_ELEMENT_MAP_FILE):
+        print("[ERROR] %s does not exist." % (GST_ELEMENT_MAP_FILE))
         sys.exit()
 
     target = os.environ.get("SOC")
@@ -50,11 +52,11 @@ def parse_gst_element_map():
         target = "arm"
         print("[WARNING] SOC env var not specified. Defaulting target to arm.")
 
-    with open(GST_ELEMENT_MAP_PATH, "r") as f:
+    with open(GST_ELEMENT_MAP_FILE, "r") as f:
         gst_element_map = yaml.safe_load(f)
 
     if target not in gst_element_map:
-        print("[ERROR] %s is not specified in the %s." % (target, GST_ELEMENT_MAP_PATH))
+        print("[ERROR] %s is not specified in the %s." % (target, GST_ELEMENT_MAP_FILE))
         sys.exit()
 
     return gst_element_map[target]

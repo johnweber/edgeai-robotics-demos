@@ -208,8 +208,12 @@ def dump_dot_file(data, prefix):
     if type(data) != list:
         data = [data]
 
-    config_file_name = os.path.split(utils.args.config)[-1]
-    config_file_name = config_file_name.split(".")[0]
+#    config_file_name = os.path.split(utils.args.config)[-1]
+#   config_file_name = config_file_name.split(".")[0]
+    # HACK: Set hard name for config_file_name because we don't use
+    # utils to parse command line args, and thus there is no argument
+    # named .args in utils.    
+    config_file_name = "rovybot_demo"
 
     for index, i in enumerate(data):
         filename = "%s_%s%d" % (config_file_name, prefix, index)
@@ -1347,85 +1351,21 @@ def get_gst_pipe(flows, outputs):
 
         # ======================== SUBFLOW ========================
         for s_index, s in enumerate(f.sub_flows):
+
             # ====================== DL-PATH ======================
-            expected_end_format = "RGB"
-            dl = s.gst_scaler_elements.pop()
-            pre_proc_elem_factory = s.gst_pre_proc_elements[0].get_factory()
-            pre_proc_elem_format = get_pad_format(pre_proc_elem_factory, "sink")
-            subflow_format = input_format
+            # Do not do this for OpenCV models
+            if (s.model.task_type != 'opencv'):
+                expected_end_format = "RGB"
+                dl = s.gst_scaler_elements.pop()
+                pre_proc_elem_factory = s.gst_pre_proc_elements[0].get_factory()
+                pre_proc_elem_format = get_pad_format(pre_proc_elem_factory, "sink")
+                subflow_format = input_format
 
-            # get_pad_format returns 1 in case if element supports any format (For Example: Appsink)
-            if pre_proc_elem_format == 1 and subflow_format != expected_end_format:
-                # Add colorconvert
-                color_convert_element = get_color_convert_config(
-                    subflow_format, expected_end_format
-                )
-
-                caps = "video/x-raw, format=%s" % expected_end_format
-                property = {}
-                if "property" in color_convert_element:
-                    prop = color_convert_element["property"]
-                    if "out-pool-size" in prop:
-                        property["out-pool-size"] = prop["out-pool-size"]
-
-                dl += make_element(
-                    color_convert_element,
-                    property=property,
-                    caps=caps,
-                )
-                subflow_format = expected_end_format
-
-            # If caps is not any and the input_format is not supported by first element in pre_proc_element_list
-            elif (
-                pre_proc_elem_format != 1 and subflow_format not in pre_proc_elem_format
-            ):
-                common_formats = set(pre_proc_elem_format)
-                # choose best_format and make element
-                best_guess = [expected_end_format, "NV12", "NV21", "I420"]
-                flag_format = None
-                for i in best_guess:
-                    if i in common_formats:
-                        flag_format = i
-                        break
-                if not flag_format:
-                    print(
-                        "[ERROR] %s does not support ['%s' , 'NV12', 'NV21', 'I420']"
-                        % (expected_end_format, pre_proc_elem_factory.get_name())
-                    )
-                    sys.exit(1)
-
-                color_convert_element = get_color_convert_config(
-                    subflow_format, flag_format
-                )
-
-                caps = "video/x-raw, format=%s" % flag_format
-                property = {}
-                if "property" in color_convert_element:
-                    prop = color_convert_element["property"]
-                    if "out-pool-size" in prop:
-                        property["out-pool-size"] = prop["out-pool-size"]
-
-                dl += make_element(
-                    color_convert_element,
-                    property=property,
-                    caps=caps,
-                )
-                subflow_format = flag_format
-
-            # Put everythin in pre_proc_element list except appsink
-            dl += s.gst_pre_proc_elements[:-1]
-            gst_player = add_and_link(dl, player=gst_player)
-            last_dl_element = dl[-1]
-            last_dl_element_caps = get_caps(last_dl_element, "sink")
-            latest_format = None
-            if last_dl_element_caps and last_dl_element_caps.get_size() > 0:
-                latest_format = last_dl_element_caps.get_structure(0).get_name()
-            if latest_format != "application/x-tensor-tiovx":
-                latest_format = subflow_format  # This isnt tested xD
-                if latest_format != expected_end_format:
+                # get_pad_format returns 1 in case if element supports any format (For Example: Appsink)
+                if pre_proc_elem_format == 1 and subflow_format != expected_end_format:
                     # Add colorconvert
                     color_convert_element = get_color_convert_config(
-                        latest_format, expected_end_format
+                        subflow_format, expected_end_format
                     )
 
                     caps = "video/x-raw, format=%s" % expected_end_format
@@ -1435,23 +1375,93 @@ def get_gst_pipe(flows, outputs):
                         if "out-pool-size" in prop:
                             property["out-pool-size"] = prop["out-pool-size"]
 
-                    colorconvert_element = make_element(
+                    dl += make_element(
                         color_convert_element,
                         property=property,
                         caps=caps,
                     )
-                    gst_player = add_and_link(colorconvert_element, player=gst_player)
-                    # Link last element in dl path before appsink to colorconvert
-                    # and ultimately link colorcvt to appsink
-                    link_elements(last_dl_element, colorconvert_element[0])
-                    last_dl_element = colorconvert_element[-1]
-                    dl += colorconvert_element
+                    subflow_format = expected_end_format
 
-            dl_appsink = s.gst_pre_proc_elements[-1]
-            gst_player.add(dl_appsink)
-            # Link last element in dl path (Can be Colorcvt) to appsink
-            link_elements(last_dl_element, dl_appsink)
-            dl.append(dl_appsink)
+                # If caps is not any and the input_format is not supported by first element in pre_proc_element_list
+                elif (
+                    pre_proc_elem_format != 1 and subflow_format not in pre_proc_elem_format
+                ):
+                    common_formats = set(pre_proc_elem_format)
+                    # choose best_format and make element
+                    best_guess = [expected_end_format, "NV12", "NV21", "I420"]
+                    flag_format = None
+                    for i in best_guess:
+                        if i in common_formats:
+                            flag_format = i
+                            break
+                    if not flag_format:
+                        print(
+                            "[ERROR] %s does not support ['%s' , 'NV12', 'NV21', 'I420']"
+                            % (expected_end_format, pre_proc_elem_factory.get_name())
+                        )
+                        sys.exit(1)
+
+                    color_convert_element = get_color_convert_config(
+                        subflow_format, flag_format
+                    )
+
+                    caps = "video/x-raw, format=%s" % flag_format
+                    property = {}
+                    if "property" in color_convert_element:
+                        prop = color_convert_element["property"]
+                        if "out-pool-size" in prop:
+                            property["out-pool-size"] = prop["out-pool-size"]
+
+                    dl += make_element(
+                        color_convert_element,
+                        property=property,
+                        caps=caps,
+                    )
+                    subflow_format = flag_format
+
+                # Put everythin in pre_proc_element list except appsink
+                dl += s.gst_pre_proc_elements[:-1]
+                gst_player = add_and_link(dl, player=gst_player)
+                last_dl_element = dl[-1]
+                last_dl_element_caps = get_caps(last_dl_element, "sink")
+                latest_format = None
+                if last_dl_element_caps and last_dl_element_caps.get_size() > 0:
+                    latest_format = last_dl_element_caps.get_structure(0).get_name()
+                if latest_format != "application/x-tensor-tiovx":
+                    latest_format = subflow_format  # This isnt tested xD
+                    if latest_format != expected_end_format:
+                        # Add colorconvert
+                        color_convert_element = get_color_convert_config(
+                            latest_format, expected_end_format
+                        )
+
+                        caps = "video/x-raw, format=%s" % expected_end_format
+                        property = {}
+                        if "property" in color_convert_element:
+                            prop = color_convert_element["property"]
+                            if "out-pool-size" in prop:
+                                property["out-pool-size"] = prop["out-pool-size"]
+
+                        colorconvert_element = make_element(
+                            color_convert_element,
+                            property=property,
+                            caps=caps,
+                        )
+                        gst_player = add_and_link(colorconvert_element, player=gst_player)
+                        # Link last element in dl path before appsink to colorconvert
+                        # and ultimately link colorcvt to appsink
+                        link_elements(last_dl_element, colorconvert_element[0])
+                        last_dl_element = colorconvert_element[-1]
+                        dl += colorconvert_element
+
+                dl_appsink = s.gst_pre_proc_elements[-1]
+                gst_player.add(dl_appsink)
+                # Link last element in dl path (Can be Colorcvt) to appsink
+                link_elements(last_dl_element, dl_appsink)
+                dl.append(dl_appsink)
+            else:
+                dl = s.gst_scaler_elements.pop()
+            
             # =========================================================
             # ====================== SENSOR ===========================
 

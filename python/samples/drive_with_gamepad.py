@@ -3,12 +3,13 @@
 # Import External programs
 import sys
 import time
+import VL53L1X
 
 # Import Internal Programs
 from common.gamepad_motor_control import *
 
 def main():
-    config = '/opt/robot/edgeai-robotics-demos/python/common/ddcontroller/config/rovybot_config.yaml'
+    config = '/opt/robot/edgeai-robotics-demos/python/apps/rovybot_demo/rovybot_demo_config.yaml'
 
     try:
         # Get the global instance of the robot control object

@@ -25,7 +25,7 @@ robot:
     max_linear_velocity: .45
 
     # Maximum Angular Velocity (rad/s)
-    max_angular_velocity: 2.2
+    max_angular_velocity: 1.0
 
     # Wheel Loop Frequency (Hz)
     wheel_frequency: 50
@@ -34,7 +34,7 @@ robot:
     max_traveling_linear_velocity: .3
 
     # Maximum Angular Velocity During Goal-to-Goal Navigation (m/s)
-    max_traveling_angular_velocity: .5
+    max_traveling_angular_velocity: 1.0
 
     # Heading Controller PID Gains
     heading_Kp: 2.0
@@ -62,13 +62,13 @@ robot:
     # For the forward-facing proximity sensor, 
     # this is the minimum distance to an obstancle (cm)
     # Beyond this, forward (positive) linear velocity is zero
-    min_distance_to_obstacle: 15
+    min_distance_to_obstacle: 30
 
     # Slow down distance.  When the forward proximity
     # sensor value is lower than this number (but greater than
     # the min distance above), the linear velocity will be
     # reduced based on an interpolated value. (cm)
-    slow_down_distance:  40
+    slow_down_distance:  50
 
     # Left Wheel Parameters
     left_wheel:

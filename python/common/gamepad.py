@@ -51,6 +51,8 @@ B11 = 1
 
 class Gamepad:
     def __init__(self):
+
+        self.stopped = True
         gamepads = [device.name for device in devices if type(device) is inputs.GamePad]
         if gamepads == []:
             raise Exception('No gamepad detected.')
@@ -98,8 +100,8 @@ class Gamepad:
         for axis in self.axesMap.keys():
             self.axes[self.axesMap[axis]] = 128
 
+        
         self.stopped = False
-
         self.stateUpdaterThread = threading.Thread(target=self.stateUpdater)
         self.stateUpdaterThread.start()
 
